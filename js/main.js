@@ -29,6 +29,9 @@ $.init = function() {
     $.treeImage = new Image();
     $.treeImage.src = "res/tree.png";
 
+    $.titleImage = new Image();
+    $.titleImage.src = "res/title.png";
+
     $.smallFont = "10px sans-serif";
     $.normalFont = "16px sans-serif";
     $.plusFont = "bold 20px sans-serif";
@@ -116,7 +119,7 @@ $.render = function(fps) {
     $.drawBackground();
     
     if($.gameState === 'menu') {
-        $.drawText("This is a menu", 200, 150, '#ffffff', $.normalFont);
+        $.ctx.drawImage($.titleImage, 0, 0, 400, 200, 280, 100, 400, 200);
     }
     
     if($.gameState === 'game') {
