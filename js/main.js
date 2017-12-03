@@ -30,7 +30,7 @@ $.init = function() {
     // rules
     $.beeSpawnTime = 5000;
     $.startHoney = 0;
-    $.startMoney = 100;
+    $.startMoney = 20;
 
     // setting up the game
     $.reset();
@@ -98,9 +98,9 @@ $.render = function(fps) {
         $.drawText(":D " + $.beeHappiness, 200, 20, '#ffffff', $.normalFont);
         $.drawText("Honey " + $.honey, 300, 20, '#ffffff', $.normalFont);
         $.drawText("$ " + $.money, 400, 20, '#ffffff', $.normalFont);
-        document.getElementById("sellButton").value = "Sell Honey (" + $.getHoneyPrice() + ")";
+        document.getElementById("sellButton").value = "Sell Honey (+$" + $.getHoneyPrice() + ")";
         document.getElementById("sellButton").disabled = $.honey < 10;
-        document.getElementById("buyBeeButton").value = "Buy Bee (" + $.getBeePrice() + ")";
+        document.getElementById("buyBeeButton").value = "Buy Bee (-$" + $.getBeePrice() + ")";
         document.getElementById("buyBeeButton").disabled = $.money < $.getBeePrice();
     }
    
@@ -147,7 +147,7 @@ $.getHoneyPrice = function () {
 };
 
 $.getBeePrice = function () {
-    return 5;
+    return 50;
 };
 
 $.goToScoreState = function () {
