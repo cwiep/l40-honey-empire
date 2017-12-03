@@ -7,6 +7,7 @@ $.Bee = function (x, y) {
     this.state = "working"; // toPot, inPot, striking
     this.stateTimer = 5000;
     this.age = 0;
+    this.name = $.utils.createName();
 };
 
 $.Bee.prototype.update = function (dt) {
