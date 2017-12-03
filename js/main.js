@@ -52,7 +52,6 @@ $.reset = function () {
     $.bees.push(new $.Bee(300, 300));
     $.bees.push(new $.Bee(300, 300));
     $.bees.push(new $.Bee(300, 300));
-    $.bees.push(new $.Bee(300, 300));
 
     $.pot = new $.Pot();
 
@@ -79,13 +78,17 @@ $.loop = function() {
 $.update = function (dt) {
     if ($.gameState === "game") {
         var curHappyChange = 0;
-        for (var b = 0; b < $.bees.length; ++b) {
+        var b;
+        for (b = 0; b < $.bees.length; ++b) {
             $.bees[b].update(dt);
             curHappyChange += $.bees[b].getHappiness();
         }
         $.nextSeasonTimer -= dt;
         if ($.nextSeasonTimer <= 0) {
             $.nextSeason();
+            for (b = 0; b < $.bees.length; ++b) {
+                $.bees[b].age++;
+            }
         }
     }
 };

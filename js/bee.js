@@ -6,6 +6,7 @@ $.Bee = function (x, y) {
     this.happiness = 1;
     this.state = "working"; // toPot, inPot, striking
     this.stateTimer = 10000;
+    this.age = 0;
 };
 
 $.Bee.prototype.update = function (dt) {
@@ -43,17 +44,22 @@ $.Bee.prototype.working = function (dt) {
 };
 
 $.Bee.prototype.toPot = function () {
-    var dist = $.utils.distance(this.x, this.y, $.pot.x+50, $.pot.y+50);
+    var dist = $.utils.distance(this.x, this.y, $.pot.x + 50, $.pot.y + 50);
     if (dist > 5) {
-        if ($.pot.x+50 < this.x) {
+        if ($.pot.x + 50 < this.x) {
             this.xval = -5;
         } else {
             this.xval = 5;
         }
-        if ($.pot.y+50 < this.y) {
-            this.yval = -5;
+        if (Math.abs($.pot.y + 50 - this.y) > 5) {
+            // prevent jittering when y values are too close
+            if ($.pot.y + 50 < this.y) {
+                this.yval = -5;
+            } else {
+                this.yval = 5;
+            }
         } else {
-            this.yval = 5;
+            this.yval = 0;
         }
         this.x += this.xval;
         this.y += this.yval;
@@ -86,6 +92,7 @@ $.Bee.prototype.render = function () {
     }
     $.drawText(this.state, this.x, this.y + 42, "#ffffff", $.smallFont);
     $.drawText(this.happiness, this.x, this.y + 54, "#ffffff", $.smallFont);
+    $.drawText(this.age, this.x + 16, this.y + 54, "#ffffff", $.smallFont);
     // $.drawText(this.stateTimer, this.x, this.y + 48, "#ffffff", $.smallFont);
 };
 
