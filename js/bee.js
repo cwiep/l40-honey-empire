@@ -97,6 +97,7 @@ $.Bee.prototype.striking = function () {
 $.Bee.prototype.dying = function () {
     this.y += 10;
     if (this.y > $.canvas.height) {
+        $.addEvent(this.name + " died of old age.");
         this.state = "dead";
     }
 };

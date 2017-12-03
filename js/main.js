@@ -228,7 +228,7 @@ $.nextSeason = function () {
 };
 
 $.createEvent = function () {
-    var r = Math.floor(Math.random()*5);
+    var r = Math.floor(Math.random()*6);
     var t = "";
     if (r == 0) {
         if ($.bees.length <= 1) {
@@ -237,24 +237,38 @@ $.createEvent = function () {
         // accident
         var i = Math.floor(Math.random() * $.bees.length);
         $.bees[i].state = "dying";
-        t = $.seasons[$.season] + ": " + $.bees[i].name + " died due to an unfortunate accident";
+        t = $.seasons[$.season] + ": " + $.bees[i].name + " died due to an unfortunate accident.";
     } else if (r == 1) {
+        // honey goes bad
         if ($.honey <= 5) {
             return;
         }
         t = $.seasons[$.season] + ": Some of your honey went bad.";
         $.honey = Math.max(0, $.honey - 2);
     } else if (r == 2) {
+        // new bee born
         if ($.bees.length < 2) {
             return;
         }
         var b = new $.Bee(400, 300);
         $.bees.push(b);
         t = $.seasons[$.season] + ": " + b.name + " was born.";
+    } else if (r == 3) {
+        // happy times
+        for (var b=0; b < $.bees.length; ++b) {
+            $.bees[b].happiness = $.utils.clamp($.bees[b].happiness + 1, 0, 10);
+        }
+        t = $.seasons[$.season] + ": The bees are happy.";
     } else {
         return;
     }
-    $.events.push(t);
+
+    $.addEvent(t);
+
+};
+
+$.addEvent = function (event) {
+    $.events.push(event);
     if ($.events.length > 5) {
         $.events.pop();
     }
