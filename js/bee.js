@@ -33,7 +33,7 @@ $.Bee.prototype.working = function (dt) {
     this.y += this.yval;
 
     this.x = $.utils.clamp(this.x, 100, $.canvas.width - 32);
-    this.y = $.utils.clamp(this.y, 0, $.canvas.height - 132);
+    this.y = $.utils.clamp(this.y, 32, $.canvas.height - 132);
 
     this.stateTimer -= dt;
     if (this.stateTimer <= 0) {
@@ -54,24 +54,24 @@ $.Bee.prototype.working = function (dt) {
 };
 
 $.Bee.prototype.toPot = function () {
-    var dist = $.utils.distance(this.x, this.y, $.pot.x + 50, $.pot.y + 50);
+    var dist = $.utils.distance(this.x, this.y, $.pot.x + 40, $.pot.y + 40);
     if (dist < 5) {
         this.stateTimer = 3000;
         this.state = "inPot";
         return;
     }
-    if (Math.abs($.pot.x + 50 - this.x) < 5) {
-        this.x = $.pot.x + 50;
-    } else if ($.pot.x + 50 < this.x) {
+    if (Math.abs($.pot.x + 40 - this.x) < 5) {
+        this.x = $.pot.x + 40;
+    } else if ($.pot.x + 40 < this.x) {
         this.xval = -5;
         this.x += this.xval;
     } else {
         this.xval = 5;
         this.x += this.xval;
     }
-    if (Math.abs($.pot.y + 50 - this.y) < 5) {
-        this.y = $.pot.y + 50;
-    } else if ($.pot.y + 50 < this.y) {
+    if (Math.abs($.pot.y + 40 - this.y) < 5) {
+        this.y = $.pot.y + 40;
+    } else if ($.pot.y + 40 < this.y) {
         this.yval = -5;
         this.y += this.yval;
     } else {
@@ -112,10 +112,10 @@ $.Bee.prototype.render = function () {
     } else {
         $.ctx.drawImage($.beeImage, 0, 0, 32, 32, this.x, this.y, 32, 32);
     }
-    $.drawText(this.name, this.x, this.y + 42, "#ffffff", $.smallFont);
+    $.drawText(this.name, this.x, this.y + 42, "#000000", $.smallFont);
     //$.drawText(this.state, this.x, this.y + 42, "#ffffff", $.smallFont);
-    $.drawText(this.happiness, this.x, this.y + 54, "#ffffff", $.smallFont);
-    $.drawText(this.age, this.x + 16, this.y + 54, "#ffffff", $.smallFont);
+    // $.drawText(this.happiness, this.x, this.y + 54, "#ffffff", $.smallFont);
+    // $.drawText(this.age, this.x + 16, this.y + 54, "#ffffff", $.smallFont);
     //$.drawText(this.stateTimer, this.x, this.y + 48, "#ffffff", $.smallFont);
 };
 
