@@ -39,6 +39,7 @@ $.Bee.prototype.working = function (dt) {
     if (this.stateTimer <= 0) {
         if (this.age > $.maxAge) {
             if (this.age > 3 * $.maxAge || $.utils.rand(1, 100) > 70) {
+                $.addEvent(this.name + " died of old age.");
                 this.state = "dying";
                 return;
             }
@@ -97,7 +98,6 @@ $.Bee.prototype.striking = function () {
 $.Bee.prototype.dying = function () {
     this.y += 10;
     if (this.y > $.canvas.height) {
-        $.addEvent(this.name + " died of old age.");
         this.state = "dead";
     }
 };
