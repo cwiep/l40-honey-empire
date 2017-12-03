@@ -241,7 +241,7 @@ $.nextSeason = function () {
 };
 
 $.createEvent = function () {
-    var r = Math.floor(Math.random()*6);
+    var r = Math.floor(Math.random() * 8);
     var t = "";
     if (r == 0) {
         if ($.bees.length <= 1) {
@@ -272,6 +272,16 @@ $.createEvent = function () {
             $.bees[b].happiness = $.utils.clamp($.bees[b].happiness + 1, 0, 10);
         }
         t = $.seasons[$.season] + ": The bees are happy.";
+    } else if (r == 4) {
+        // bad day
+        var b = Math.floor(Math.random() * $.bees.length);
+        $.bees[b].happiness = $.utils.clamp($.bees[b].happiness - 3, 0, 10);
+        t = $.seasons[$.season] + ": " + $.bees[b].name + " has a bad day.";
+    } else if (r == 5) {
+        // bad taxes
+        var taxes = Math.floor(0.1 * $.money);
+        $.money -= taxes;
+        t = $.seasons[$.season] + ": The IRS collects 10% taxes ($" + taxes + ").";
     } else {
         return;
     }
