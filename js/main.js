@@ -11,17 +11,17 @@ window.requestAnimFrame = (function () {
 
 window.onload = function () {
     $.init();
-}
+};
 
 $.init = function() {
     $.canvas = document.getElementById("canvas");
     $.ctx = $.canvas.getContext("2d");
 
     $.beeImage = new Image();
-    $.beeImage.src = "bee.png";
+    $.beeImage.src = "res/bee.png";
 
-    $.normalFont = "bold 16px sans-serif"
-    $.plusFont = "bold 20px sans-serif"
+    $.normalFont = "bold 16px sans-serif";
+    $.plusFont = "bold 20px sans-serif";
     $.ctx.font = $.normalFont;
     
     // rules
@@ -29,12 +29,12 @@ $.init = function() {
     
     // setting up the game
     $.reset();
-    $.gameState = "game";
+    $.goToMenuState();
     $.lastTime = (new Date()).getTime();
     
     // let's go
     $.loop();
-}
+};
 
 $.reset = function () {
     $.showFps = true;
@@ -48,7 +48,7 @@ $.reset = function () {
     
     $.beeSpawnTimer = $.beeSpawnTime;
     $.beeHappiness = 10000;
-}
+};
 
 $.loop = function() {
     var t = (new Date()).getTime();
@@ -58,25 +58,27 @@ $.loop = function() {
     //$.handleInput();
     $.render(1000/dt);
     requestAnimFrame( $.loop );
-}
+};
 
 $.update = function (dt) {
-    $.beeSpawnTimer -= dt;
-    if ($.beeSpawnTimer <= 0) {
-        $.beeSpawnTimer = $.beeSpawnTime;
-        $.bees.push(new $.Bee($.utils.rand(0, $.canvas.width), $.utils.rand(0, $.canvas.height)));
+    if ($.gameState === "game") {
+        $.beeSpawnTimer -= dt;
+        if ($.beeSpawnTimer <= 0) {
+            $.beeSpawnTimer = $.beeSpawnTime;
+            $.bees.push(new $.Bee($.utils.rand(0, $.canvas.width), $.utils.rand(0, $.canvas.height)));
+        }
+        var curHappyChange = 0;
+        for (var b = 0; b < $.bees.length; ++b) {
+            $.bees[b].update();
+            curHappyChange += $.bees[b].getHappiness();
+        }
+        // TODO:
+        $.beeHappiness -= dt;
+        if ($.beeHappiness <= 0) {
+            $.goToScoreState();
+        }
     }
-    var curHappyChange = 0;
-    for (var b=0; b < $.bees.length; ++b) {
-        $.bees[b].update();
-        curHappyChange += $.bees[b].getHappiness();
-    }
-    // TODO: 
-    $.beeHappiness -= dt;
-    if ($.beeHappiness <= 0) {
-        $.gameState = "score";
-    }
-}
+};
 
 $.render = function(fps) {
     $.drawBackground();
@@ -100,12 +102,12 @@ $.render = function(fps) {
     if($.showFps) {
         $.drawText("FPS: " + fps.toFixed(1), 10, 20, '#ffffff');
     }
-}
+};
 
 $.drawBackground = function () {
     $.ctx.fillStyle = "#1166FF";
     $.ctx.fillRect(0, 0, $.canvas.width, $.canvas.height);
-}
+};
 
 $.drawText = function(text, x, y, col, font) {
     $.ctx.font = $.normalFont;
@@ -114,9 +116,24 @@ $.drawText = function(text, x, y, col, font) {
     }
     $.ctx.fillStyle = col;
     $.ctx.fillText(text, x, y);
-}
+};
 
 $.onPressPlay = function () {
     $.reset();
+    $.goToGameState();
+};
+
+$.goToScoreState = function () {
+    $.gameState = "score";
+    document.getElementById("playButton").style.display = "block";
+};
+
+$.goToMenuState = function () {
+    $.gameState = "menu";
+    document.getElementById("playButton").style.display = "block";
+};
+
+$.goToGameState = function () {
     $.gameState = "game";
-}
+    document.getElementById("playButton").style.display = "none";
+};
