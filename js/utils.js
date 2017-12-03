@@ -65,5 +65,5 @@ $.utils.names = ["Herbert", "Marshall", "Fritz", "Jake", "Hugo", "Sam", "Dave", 
     "Hannah", "Maggie", "Ann", "Dora", "Fabienne", "Gertrude", "Emilia"];
 
 $.utils.createName = function () {
-    return $.utils.names[$.utils.rand(0, $.utils.names.length)];
+    return $.utils.names[Math.floor(Math.random()*$.utils.names.length)];
 };

@@ -27,14 +27,14 @@ $.init = function() {
     $.normalFont = "bold 16px sans-serif";
     $.plusFont = "bold 20px sans-serif";
     $.ctx.font = $.normalFont;
-    
+
     // rules
     $.beeSpawnTime = 5000;
-    $.maxAge = 5; // in seasons
+    $.maxAge = 20; // in seasons
     $.startHoney = 0;
     $.startMoney = 20;
-    $.nextSeasonTime = 3000;
-    $.seasons = ["spring", "summer", "fall", "winter"];
+    $.nextSeasonTime = 5000;
+    $.seasons = ["Spring", "Summer", "Fall", "Winter"];
 
     // setting up the game
     $.reset();
@@ -46,7 +46,7 @@ $.init = function() {
 };
 
 $.reset = function () {
-    $.showFps = true;
+    $.showFps = false;
     
     $.bees = [new $.Bee(200, 200)];
     $.bees.push(new $.Bee(300, 300));
@@ -57,13 +57,14 @@ $.reset = function () {
     $.pot = new $.Pot();
 
     $.beeSpawnTimer = $.beeSpawnTime;
-    $.beeHappiness = 10000;
 
     $.honey = $.startHoney;
     $.money = $.startMoney;
 
     $.season = 0;
     $.nextSeasonTimer = $.nextSeasonTime;
+
+    $.events = [];
 };
 
 $.loop = function() {
@@ -78,6 +79,9 @@ $.loop = function() {
 
 $.update = function (dt) {
     if ($.gameState === "game") {
+        if ($.bees.length == 0) {
+            $.gameState = "score";
+        }
         var curHappyChange = 0;
         var b;
         var checkDead = false;
@@ -114,13 +118,12 @@ $.render = function(fps) {
             $.bees[b].render();
         }
         $.pot.render();
-        $.drawText("Bees " + $.bees.length, 100, 20, '#ffffff', $.normalFont);
-        $.drawText("\u263A " + $.beeHappiness, 200, 20, '#ffffff', $.normalFont);
+        $.drawText("Bees " + $.bees.length, 200, 20, '#ffffff', $.normalFont);
         $.drawText("Honey " + $.honey, 300, 20, '#ffffff', $.normalFont);
         $.drawText("$ " + $.money, 400, 20, '#ffffff', $.normalFont);
         $.drawText($.seasons[$.season], 500, 20, '#ffffff', $.normalFont);
         document.getElementById("sellButton").value = "Sell Honey (+$" + $.getHoneyPrice() + ")";
-        document.getElementById("sellButton").disabled = $.honey < 10;
+        document.getElementById("sellButton").disabled = $.honey < 2;
         document.getElementById("buyBeeButton").value = "Buy Bee (-$" + $.getBeePrice() + ")";
         document.getElementById("buyBeeButton").disabled = $.money < $.getBeePrice();
     }
@@ -154,10 +157,10 @@ $.onPressPlay = function () {
 };
 
 $.onPressSellHoney = function () {
-    $.honey -= 10;
+    $.honey -= 2;
     $.money += $.getHoneyPrice();
     for (var b=0; b < $.bees.length; ++b) {
-        $.bees[b].happiness -= 1;
+        $.bees[b].happiness = $.utils.clamp($.bees[b].happiness - 1, 0, 10);
     }
 };
 
@@ -206,19 +209,62 @@ $.goToGameState = function () {
 };
 
 $.nextSeason = function () {
+    $.createEvent();
     $.nextSeasonTimer = $.nextSeasonTime;
     $.season = ($.season + 1) % 4;
 
     for (var b=0; b < $.bees.length; ++b) {
         if ($.season == 3) {
             // winter // TODO: only without bed
-            $.bees[b].happiness -= 3;
+            $.bees[b].happiness = $.utils.clamp($.bees[b].happiness - 3, 0, 10);
         } else if ($.season == 1) {
             // summer
-            $.bees[b].happiness += 2;
+            $.bees[b].happiness = $.utils.clamp($.bees[b].happiness + 3, 0, 10);
         } else if ($.season == 0) {
             // spring
-            $.bees[b].happiness += 1;
+            $.bees[b].happiness = $.utils.clamp($.bees[b].happiness + 1, 0, 10);
         }
     }
+};
+
+$.createEvent = function () {
+    var r = Math.floor(Math.random()*5);
+    var t = "";
+    if (r == 0) {
+        if ($.bees.length <= 1) {
+            return;
+        }
+        // accident
+        var i = Math.floor(Math.random() * $.bees.length);
+        $.bees[i].state = "dying";
+        t = $.seasons[$.season] + ": " + $.bees[i].name + " died due to an unfortunate accident";
+    } else if (r == 1) {
+        if ($.honey <= 5) {
+            return;
+        }
+        t = $.seasons[$.season] + ": Some of your honey went bad.";
+        $.honey = Math.max(0, $.honey - 2);
+    } else if (r == 2) {
+        if ($.bees.length < 2) {
+            return;
+        }
+        var b = new $.Bee(400, 300);
+        $.bees.push(b);
+        t = $.seasons[$.season] + ": " + b.name + " was born.";
+    } else {
+        return;
+    }
+    $.events.push(t);
+    if ($.events.length > 5) {
+        $.events.pop();
+    }
+
+    document.getElementById("events").innerHTML = "";
+    for (var e = 0; e < $.events.length; ++e) {
+        document.getElementById("events").innerHTML += $.events[e] + "\<br\>";
+    }
+};
+
+$.onPressCloseEvent = function () {
+    document.getElementById("events").style.display = "none";
 };

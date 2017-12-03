@@ -36,17 +36,25 @@
         Your browser does not support canvas. Please try again with a different browser.
     </canvas>
     <div id="gui" class="interface">
-        <input id="playButton" type="button" onclick="$.onPressPlay()" value="Play" style="position: relative; margin: 0 auto;">
-        <input id="sellButton" type="button" onclick="$.onPressSellHoney()" value="Sell Honey" style="position: relative; margin: 0 auto;">
-        <input id="buyBeeButton" type="button" onclick="$.onPressBuyBee()" value="Buy Bee" style="position: relative; margin: 0 auto;">
+        <input id="playButton" type="button" onclick="$.onPressPlay()" value="Play"
+               style="position: absolute; margin: 0 auto;">
+        <div id="gamebuttons" style="position: absolute; bottom: 0; left: 0">
+            <input id="sellButton" type="button" onclick="$.onPressSellHoney()" value="Sell Honey"
+                   >
+            <input id="buyBeeButton" type="button" onclick="$.onPressBuyBee()" value="Buy Bee"
+                   >
+        </div>
+        <div id="events"
+             style="position: absolute; right: 0; bottom: 0; display: block; width: 400px; height: 100px; background-color: darkgrey;">
+        </div>
     </div>
 </div>
 
-    <script>$ = {};</script>
-    <script src="js/utils.js"></script>
-    <script src="js/bee.js"></script>
-    <script src="js/pot.js"></script>
-    <script src="js/main.js"></script>
+<script>$ = {};</script>
+<script src="js/utils.js"></script>
+<script src="js/bee.js"></script>
+<script src="js/pot.js"></script>
+<script src="js/main.js"></script>
 
 </body>
 </html>
