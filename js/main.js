@@ -20,16 +20,21 @@ $.init = function() {
     $.beeImage = new Image();
     $.beeImage.src = "res/bee.png";
 
+    $.potImage = new Image();
+    $.potImage.src = "res/pot.png";
+
     $.normalFont = "bold 16px sans-serif";
     $.plusFont = "bold 20px sans-serif";
     $.ctx.font = $.normalFont;
     
     // rules
     $.beeSpawnTime = 5000;
-    
+    $.startHoney = 0;
+    $.startMoney = 100;
+
     // setting up the game
     $.reset();
-    $.goToMenuState();
+    $.goToGameState();
     $.lastTime = (new Date()).getTime();
     
     // let's go
@@ -45,9 +50,14 @@ $.reset = function () {
     $.bees.push(new $.Bee(300, 300));
     $.bees.push(new $.Bee(300, 300));
     $.bees.push(new $.Bee(300, 300));
-    
+
+    $.pot = new $.Pot();
+
     $.beeSpawnTimer = $.beeSpawnTime;
     $.beeHappiness = 10000;
+
+    $.honey = $.startHoney;
+    $.money = $.startMoney;
 };
 
 $.loop = function() {
@@ -62,21 +72,13 @@ $.loop = function() {
 
 $.update = function (dt) {
     if ($.gameState === "game") {
-        $.beeSpawnTimer -= dt;
-        if ($.beeSpawnTimer <= 0) {
-            $.beeSpawnTimer = $.beeSpawnTime;
-            $.bees.push(new $.Bee($.utils.rand(0, $.canvas.width), $.utils.rand(0, $.canvas.height)));
-        }
         var curHappyChange = 0;
         for (var b = 0; b < $.bees.length; ++b) {
-            $.bees[b].update();
+            $.bees[b].update(dt);
             curHappyChange += $.bees[b].getHappiness();
         }
         // TODO:
-        $.beeHappiness -= dt;
-        if ($.beeHappiness <= 0) {
-            $.goToScoreState();
-        }
+        // $.beeHappiness -= dt;
     }
 };
 
@@ -91,12 +93,19 @@ $.render = function(fps) {
         for (var b=0; b < $.bees.length; ++b) {
             $.bees[b].render();
         }
+        $.pot.render();
         $.drawText("Bees " + $.bees.length, 100, 20, '#ffffff', $.normalFont);
         $.drawText(":D " + $.beeHappiness, 200, 20, '#ffffff', $.normalFont);
-    } 
+        $.drawText("Honey " + $.honey, 300, 20, '#ffffff', $.normalFont);
+        $.drawText("$ " + $.money, 400, 20, '#ffffff', $.normalFont);
+        document.getElementById("sellButton").value = "Sell Honey (" + $.getHoneyPrice() + ")";
+        document.getElementById("sellButton").disabled = $.honey < 10;
+        document.getElementById("buyBeeButton").value = "Buy Bee (" + $.getBeePrice() + ")";
+        document.getElementById("buyBeeButton").disabled = $.money < $.getBeePrice();
+    }
    
     if($.gameState === 'score') {
-        $.drawText("Game Över, da wirtsch de Pabbi abba freun!", 100, 200, '#ffffff', $.normalFont);
+        $.drawText("Game Over, da wirtsch de Pabbi abba freun!", 100, 200, '#ffffff', $.normalFont);
     }
     
     if($.showFps) {
@@ -121,6 +130,24 @@ $.drawText = function(text, x, y, col, font) {
 $.onPressPlay = function () {
     $.reset();
     $.goToGameState();
+};
+
+$.onPressSellHoney = function () {
+    $.honey -= 10;
+    $.money += $.getHoneyPrice();
+};
+
+$.onPressBuyBee = function () {
+    $.money -= $.getBeePrice();
+    $.bees.push(new $.Bee($.utils.rand(0, $.canvas.width), $.utils.rand(0, $.canvas.height)));
+};
+
+$.getHoneyPrice = function () {
+    return 5;
+};
+
+$.getBeePrice = function () {
+    return 5;
 };
 
 $.goToScoreState = function () {

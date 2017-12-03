@@ -15,6 +15,10 @@ $.utils.pointInRect = function( rx, ry, rw, rh, px, py ) {
         return (px > rx && px < rx+rw && py > ry && py < ry+rh);
 };
 
+$.utils.distance = function( p1x, p1y, p2x, p2y ) {
+    return Math.sqrt(Math.pow(p1x - p2x, 2) + Math.pow(p1y - p2y, 2));
+};
+
 $.utils.renderFavicon = function() {
         var favicon = document.getElementById( 'favicon' ),
                 favc = document.createElement( 'canvas' ),
