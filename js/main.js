@@ -30,6 +30,7 @@ $.init = function() {
     
     // rules
     $.beeSpawnTime = 5000;
+    $.maxAge = 5; // in seasons
     $.startHoney = 0;
     $.startMoney = 20;
     $.nextSeasonTime = 3000;
@@ -79,9 +80,17 @@ $.update = function (dt) {
     if ($.gameState === "game") {
         var curHappyChange = 0;
         var b;
+        var checkDead = false;
         for (b = 0; b < $.bees.length; ++b) {
             $.bees[b].update(dt);
+            if ($.bees[b].isDead()) {
+                checkDead = true;
+            }
             curHappyChange += $.bees[b].getHappiness();
+        }
+        if (checkDead === true) {
+            var f = function (bee) {return !bee.isDead()};
+            $.bees = $.bees.filter(f);
         }
         $.nextSeasonTimer -= dt;
         if ($.nextSeasonTimer <= 0) {
@@ -155,9 +164,6 @@ $.onPressSellHoney = function () {
 $.onPressBuyBee = function () {
     $.money -= $.getBeePrice();
     $.bees.push(new $.Bee($.utils.rand(0, $.canvas.width), $.utils.rand(0, $.canvas.height)));
-    for (var b=0; b < $.bees.length; ++b) {
-        $.bees[b].happiness -= 1;
-    }
 };
 
 $.getHoneyPrice = function () {

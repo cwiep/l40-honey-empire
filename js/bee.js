@@ -5,7 +5,7 @@ $.Bee = function (x, y) {
     this.yval = 0;
     this.happiness = 1;
     this.state = "working"; // toPot, inPot, striking
-    this.stateTimer = 10000;
+    this.stateTimer = 5000;
     this.age = 0;
 };
 
@@ -18,14 +18,16 @@ $.Bee.prototype.update = function (dt) {
         this.inPot(dt);
     } else if (this.state === "striking") {
         this.striking();
+    } else if (this.state === "dying") {
+        this.dying();
     }
 };
 
 $.Bee.prototype.working = function (dt) {
-    this.xval += $.utils.rand(-2, 2);
-    this.yval += $.utils.rand(-2, 2);
-    this.xval = $.utils.clamp(this.xval, -5, 5);
-    this.yval = $.utils.clamp(this.yval, -5, 5);
+    this.xval += $.utils.rand(-1, 1);
+    this.yval += $.utils.rand(-1, 1);
+    this.xval = $.utils.clamp(this.xval, -3, 3);
+    this.yval = $.utils.clamp(this.yval, -3, 3);
     this.x += this.xval;
     this.y += this.yval;
 
@@ -34,6 +36,12 @@ $.Bee.prototype.working = function (dt) {
 
     this.stateTimer -= dt;
     if (this.stateTimer <= 0) {
+        if (this.age > $.maxAge) {
+            if ($.utils.rand(1, 100) > 70) {
+                this.state = "dying";
+                return;
+            }
+        }
         this.state = "toPot";
     }
 
@@ -60,6 +68,7 @@ $.Bee.prototype.toPot = function () {
             }
         } else {
             this.yval = 0;
+            this.yval = $.pot.y;
         }
         this.x += this.xval;
         this.y += this.yval;
@@ -82,6 +91,17 @@ $.Bee.prototype.striking = function () {
     if (this.happiness > 0) {
         this.state = "working";
     }
+};
+
+$.Bee.prototype.dying = function () {
+    this.y += 10;
+    if (this.y > $.canvas.height) {
+        this.state = "dead";
+    }
+};
+
+$.Bee.prototype.isDead = function () {
+    return this.state === "dead";
 };
 
 $.Bee.prototype.render = function () {
