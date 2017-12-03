@@ -23,6 +23,7 @@ $.init = function() {
     $.potImage = new Image();
     $.potImage.src = "res/pot.png";
 
+    $.smallFont = "10px sans-serif";
     $.normalFont = "bold 16px sans-serif";
     $.plusFont = "bold 20px sans-serif";
     $.ctx.font = $.normalFont;
@@ -31,6 +32,8 @@ $.init = function() {
     $.beeSpawnTime = 5000;
     $.startHoney = 0;
     $.startMoney = 20;
+    $.nextSeasonTime = 3000;
+    $.seasons = ["spring", "summer", "fall", "winter"];
 
     // setting up the game
     $.reset();
@@ -58,6 +61,9 @@ $.reset = function () {
 
     $.honey = $.startHoney;
     $.money = $.startMoney;
+
+    $.season = 0;
+    $.nextSeasonTimer = $.nextSeasonTime;
 };
 
 $.loop = function() {
@@ -77,8 +83,10 @@ $.update = function (dt) {
             $.bees[b].update(dt);
             curHappyChange += $.bees[b].getHappiness();
         }
-        // TODO:
-        // $.beeHappiness -= dt;
+        $.nextSeasonTimer -= dt;
+        if ($.nextSeasonTimer <= 0) {
+            $.nextSeason();
+        }
     }
 };
 
@@ -95,9 +103,10 @@ $.render = function(fps) {
         }
         $.pot.render();
         $.drawText("Bees " + $.bees.length, 100, 20, '#ffffff', $.normalFont);
-        $.drawText(":D " + $.beeHappiness, 200, 20, '#ffffff', $.normalFont);
+        $.drawText("\u263A " + $.beeHappiness, 200, 20, '#ffffff', $.normalFont);
         $.drawText("Honey " + $.honey, 300, 20, '#ffffff', $.normalFont);
         $.drawText("$ " + $.money, 400, 20, '#ffffff', $.normalFont);
+        $.drawText($.seasons[$.season], 500, 20, '#ffffff', $.normalFont);
         document.getElementById("sellButton").value = "Sell Honey (+$" + $.getHoneyPrice() + ")";
         document.getElementById("sellButton").disabled = $.honey < 10;
         document.getElementById("buyBeeButton").value = "Buy Bee (-$" + $.getBeePrice() + ")";
@@ -135,19 +144,41 @@ $.onPressPlay = function () {
 $.onPressSellHoney = function () {
     $.honey -= 10;
     $.money += $.getHoneyPrice();
+    for (var b=0; b < $.bees.length; ++b) {
+        $.bees[b].happiness -= 1;
+    }
 };
 
 $.onPressBuyBee = function () {
     $.money -= $.getBeePrice();
     $.bees.push(new $.Bee($.utils.rand(0, $.canvas.width), $.utils.rand(0, $.canvas.height)));
+    for (var b=0; b < $.bees.length; ++b) {
+        $.bees[b].happiness -= 1;
+    }
 };
 
 $.getHoneyPrice = function () {
-    return 5;
+    if ($.season == 0 || $.season == 2) {
+        // spring, fall
+        return 5;
+    } else if ($.season == 3) {
+        // winter
+        return 10;
+    }
+    // summer
+    return 2;
 };
 
 $.getBeePrice = function () {
-    return 50;
+    if ($.season == 0 || $.season == 2) {
+        // spring, fall
+        return 60;
+    } else if ($.season == 3) {
+        // winter
+        return 100;
+    }
+    // summer
+    return 40;
 };
 
 $.goToScoreState = function () {
@@ -163,4 +194,22 @@ $.goToMenuState = function () {
 $.goToGameState = function () {
     $.gameState = "game";
     document.getElementById("playButton").style.display = "none";
+};
+
+$.nextSeason = function () {
+    $.nextSeasonTimer = $.nextSeasonTime;
+    $.season = ($.season + 1) % 4;
+
+    for (var b=0; b < $.bees.length; ++b) {
+        if ($.season == 3) {
+            // winter // TODO: only without bed
+            $.bees[b].happiness -= 3;
+        } else if ($.season == 1) {
+            // summer
+            $.bees[b].happiness += 2;
+        } else if ($.season == 0) {
+            // spring
+            $.bees[b].happiness += 1;
+        }
+    }
 };

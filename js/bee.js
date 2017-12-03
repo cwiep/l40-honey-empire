@@ -15,6 +15,8 @@ $.Bee.prototype.update = function (dt) {
         this.toPot();
     } else if (this.state === "inPot") {
         this.inPot(dt);
+    } else if (this.state === "striking") {
+        this.striking();
     }
 };
 
@@ -32,6 +34,11 @@ $.Bee.prototype.working = function (dt) {
     this.stateTimer -= dt;
     if (this.stateTimer <= 0) {
         this.state = "toPot";
+    }
+
+    if (this.happiness < 0) {
+        this.state = "striking";
+        this.y = $.canvas.height - 64;
     }
 };
 
@@ -65,10 +72,21 @@ $.Bee.prototype.inPot = function (dt) {
     }
 };
 
+$.Bee.prototype.striking = function () {
+    if (this.happiness > 0) {
+        this.state = "working";
+    }
+};
+
 $.Bee.prototype.render = function () {
-    $.ctx.drawImage($.beeImage, 0, 0, 32, 32, this.x, this.y, 32, 32);
-    // $.drawText(this.state, this.x, this.y + 32, "#ffffff", $.normalFont);
-    // $.drawText(this.stateTimer, this.x, this.y + 48, "#ffffff", $.normalFont);
+    if (this.state === "striking") {
+        $.ctx.drawImage($.beeImage, 32, 0, 32, 32, this.x, this.y, 32, 32);
+    } else {
+        $.ctx.drawImage($.beeImage, 0, 0, 32, 32, this.x, this.y, 32, 32);
+    }
+    $.drawText(this.state, this.x, this.y + 42, "#ffffff", $.smallFont);
+    $.drawText(this.happiness, this.x, this.y + 54, "#ffffff", $.smallFont);
+    // $.drawText(this.stateTimer, this.x, this.y + 48, "#ffffff", $.smallFont);
 };
 
 $.Bee.prototype.getHappiness = function () {
