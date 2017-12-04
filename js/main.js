@@ -60,11 +60,11 @@ $.init = function () {
 $.reset = function () {
     $.showFps = false;
 
-    $.bees = [new $.Bee(200, 200)];
-    $.bees.push(new $.Bee(300, 300));
-    $.bees.push(new $.Bee(300, 300));
-    $.bees.push(new $.Bee(300, 300));
-    $.bees.push(new $.Bee(300, 300));
+    $.bees = [new $.Bee(200, 200, $.utils.rand(10, 20))];
+    $.bees.push(new $.Bee(300, 300, $.utils.rand(10, 20)));
+    $.bees.push(new $.Bee(300, 300, $.utils.rand(10, 20)));
+    $.bees.push(new $.Bee(300, 300, $.utils.rand(10, 20)));
+    $.bees.push(new $.Bee(300, 300, $.utils.rand(10, 20)));
 
     $.pot = new $.Pot();
 
@@ -145,14 +145,19 @@ $.render = function (fps) {
         $.pot.render();
         $.ctx.drawImage($.beeImage, 0, 0, 32, 32, 360, 4, 20, 20);
         $.drawText($.bees.length, 385, 20, '#333333', $.normalFont);
-        $.ctx.drawImage($.honeyImage, 0, 0, 40, 40, 410, 4, 20, 20);
-        $.drawText($.honey, 435, 20, '#333333', $.normalFont);
-        $.drawText("$ " + $.money, 470, 20, '#333333', $.normalFont);
+
+        $.ctx.drawImage($.honeyImage, 0, 0, 40, 40, 430, 4, 20, 20);
+        $.drawText($.honey, 455, 20, '#333333', $.normalFont);
+
+        $.drawText("$ " + $.money, 500, 20, '#333333', $.normalFont);
 
         // innerHtml does not work in Chrome... only for these buttons. hiveButton works in upgrade.js WTF??!?!?!
-        document.getElementById("honeyText").innerText = "x5: +$" + ($.getHoneyPrice() * 5);
-        document.getElementById("honeyText").innerHtml = "x5: +$" + ($.getHoneyPrice() * 5);
+        document.getElementById("honeyText").innerText = "x5:+$" + ($.getHoneyPrice() * 5);
+        document.getElementById("honeyText").innerHtml = "x5:+$" + ($.getHoneyPrice() * 5);
         document.getElementById("honeyButton").disabled = $.honey < 5;
+        document.getElementById("honey2Text").innerText = "x10:+$" + ($.getHoneyPrice() * 5);
+        document.getElementById("honey2Text").innerHtml = "x10:+$" + ($.getHoneyPrice() * 5);
+        document.getElementById("honey2Button").disabled = $.honey < 10;
         document.getElementById("beeText").innerText = "$" + $.getBeePrice();
         document.getElementById("beeText").innerHtml = "$" + $.getBeePrice();
         document.getElementById("beeButton").disabled = $.money < $.getBeePrice();
@@ -189,14 +194,16 @@ $.onPressPlay = function () {
 $.onPressSellHoney = function (amount) {
     $.honey -= amount;
     $.money += $.getHoneyPrice() * amount;
-    for (var b = 0; b < $.bees.length; ++b) {
-        $.bees[b].happiness = $.utils.clamp($.bees[b].happiness - 1, 0, 10);
+    if ($.upgrade.coolBees === false) {
+        for (var b = 0; b < $.bees.length; ++b) {
+            $.bees[b].happiness = $.utils.clamp($.bees[b].happiness - 1, 0, 10);
+        }
     }
 };
 
 $.onPressBuyBee = function () {
     $.money -= $.getBeePrice();
-    $.bees.push(new $.Bee($.utils.rand(0, $.canvas.width), $.utils.rand(0, $.canvas.height)));
+    $.bees.push(new $.Bee($.utils.rand(0, $.canvas.width), $.utils.rand(0, $.canvas.height), $.utils.rand(10, 20)));
 };
 
 $.getHoneyPrice = function () {
@@ -243,6 +250,7 @@ $.goToGameState = function () {
 
 $.setInterfaceVisible = function (display) {
     document.getElementById("honeyButton").style.display = display;
+    document.getElementById("honey2Button").style.display = display;
     document.getElementById("beeButton").style.display = display;
     document.getElementById("events").style.display = display;
     $.upgrade.setVisibility(display);

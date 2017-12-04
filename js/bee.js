@@ -1,16 +1,21 @@
-$.Bee = function (x, y) {
+$.Bee = function (x, y, age) {
     this.x = x;
     this.y = y;
     this.xval = 0;
     this.yval = 0;
     this.happiness = 5;
     this.state = "working"; // toPot, inPot, striking, dying, dead
-    this.stateTimer = 5000;
+    this.workingTime = 7000;
+    this.stateTimer = this.workingTime;
+    this.maxAge = age
     this.age = 1;
     this.name = $.utils.createName();
 };
 
 $.Bee.prototype.update = function (dt) {
+    if ($.upgrade.moreHoney === true) {
+        this.workingTime = 5000;
+    }
     if (this.state === "working") {
         this.working(dt);
     } else if (this.state === "toPot") {
@@ -32,13 +37,13 @@ $.Bee.prototype.working = function (dt) {
     this.x += this.xval;
     this.y += this.yval;
 
-    this.x = $.utils.clamp(this.x, 100, $.canvas.width - 32);
-    this.y = $.utils.clamp(this.y, 32, $.canvas.height - 132);
+    this.x = $.utils.clamp(this.x, 100, $.canvas.width - 150);
+    this.y = $.utils.clamp(this.y, 32, $.canvas.height - 150);
 
     this.stateTimer -= dt;
     if (this.stateTimer <= 0) {
-        if (this.age > $.maxAge) {
-            if (this.age > 3 * $.maxAge || $.utils.rand(1, 100) > 70) {
+        if (this.age > this.maxAge) {
+            if (this.age > 3 * this.maxAge || $.utils.rand(1, 100) > 70) {
                 $.addEvent(this.name + " died of old age.");
                 this.state = "dying";
                 return;
@@ -85,7 +90,7 @@ $.Bee.prototype.inPot = function (dt) {
     this.stateTimer -= dt;
     if (this.stateTimer <= 0) {
         $.honey += this.getHoneyProduction();
-        this.stateTimer = 10000;
+        this.stateTimer = this.workingTime;
         this.state = "working";
     }
 };
@@ -113,6 +118,8 @@ $.Bee.prototype.render = function () {
     } else {
         if ($.upgrade.hats === true && $.season == 3) {
             $.ctx.drawImage($.beeImage, 64, 0, 32, 32, this.x, this.y, 32, 32);
+        } else if ($.upgrade.coolBees === true) {
+            $.ctx.drawImage($.beeImage, 96, 0, 32, 32, this.x, this.y, 32, 32);
         } else {
             $.ctx.drawImage($.beeImage, 0, 0, 32, 32, this.x, this.y, 32, 32);
         }
@@ -133,7 +140,10 @@ $.Bee.prototype.getHoneyProduction = function () {
     if (this.happiness > 1) {
         ++h;
     }
-    if (this.age > $.maxAge / 2) {
+    if ($.upgrade.moreHoney === true) {
+        ++h;
+    }
+    if (this.age > this.maxAge / 2) {
         ++h;
     }
     if (this.happiness == 10) {

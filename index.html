@@ -57,11 +57,30 @@
                 <img  src="res/button_hive.png" width="40" height="40"/>
                 <span id="hiveText">$30</span>
             </button>
+            <button id="beePowerButton" class="btn" onclick="$.upgrade.onPressBeePower()" style="float: right;"
+                    title="Bees produce faster.">
+                <img  src="res/button_bee_power.png" width="40" height="40"/>
+                <span id="beePowerText">$40</span>
+            </button>
+            <button id="moreHoneyButton" class="btn" onclick="$.upgrade.onPressMoreHoney()" style="float: right;"
+                    title="Bees produce more honey.">
+                <img  src="res/button_more_honey.png" width="40" height="40"/>
+                <span id="moreHoneyText">$40</span>
+            </button>
+            <button id="coolBeesButton" class="btn" onclick="$.upgrade.onPressCoolBees()" style="float: right;"
+                    title="Bees cannot see when you sell their honey.">
+                <img  src="res/button_bee_cool.png" width="40" height="40"/>
+                <span id="coolBeesText">$200</span>
+            </button>
         </div>
         <div id="gamebuttons" style="position: absolute; right: 69px; top: 32px; width: 64px;">
             <button id="honeyButton" class="btn" onclick="$.onPressSellHoney(5)" style="float: right;">
                 <img  src="res/honey.png" width="40" height="40"/>
                 <span id="honeyText">fuck</span>
+            </button>
+            <button id="honey2Button" class="btn" onclick="$.onPressSellHoney(10)" style="float: right;">
+                <img  src="res/honey.png" width="40" height="40"/>
+                <span id="honey2Text">fuck</span>
             </button>
             <button id="beeButton" class="btn" onclick="$.onPressBuyBee()" style="float: right;">
                 <img  src="res/button_bee.png" width="40" height="40"/>
