@@ -1,19 +1,19 @@
 window.requestAnimFrame = (function () {
-  return window.requestAnimationFrame   ||
-      window.webkitRequestAnimationFrame ||
-      window.mozRequestAnimationFrame    ||
-      window.oRequestAnimationFrame      ||
-      window.msRequestAnimationFrame     ||
-      function(/* function */ callback, /* DOMElement */ element){
-        window.setTimeout(callback, 1000 / 60);
-      };
+    return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function (/* function */ callback, /* DOMElement */ element) {
+            window.setTimeout(callback, 1000 / 60);
+        };
 })();
 
 window.onload = function () {
     $.init();
 };
 
-$.init = function() {
+$.init = function () {
     $.canvas = document.getElementById("canvas");
     $.ctx = $.canvas.getContext("2d");
 
@@ -52,14 +52,14 @@ $.init = function() {
     $.reset();
     $.goToMenuState();
     $.lastTime = (new Date()).getTime();
-    
+
     // let's go
     $.loop();
 };
 
 $.reset = function () {
     $.showFps = false;
-    
+
     $.bees = [new $.Bee(200, 200)];
     $.bees.push(new $.Bee(300, 300));
     $.bees.push(new $.Bee(300, 300));
@@ -76,17 +76,19 @@ $.reset = function () {
     $.season = 0;
     $.nextSeasonTimer = $.nextSeasonTime;
 
+    $.buttonUpdateTimer = 1000;
+
     $.events = [];
 };
 
-$.loop = function() {
+$.loop = function () {
     var t = (new Date()).getTime();
     var dt = t - $.lastTime;
     $.lastTime = t;
     $.update(dt);
     //$.handleInput();
-    $.render(1000/dt);
-    requestAnimFrame( $.loop );
+    $.render(1000 / dt);
+    requestAnimFrame($.loop);
 };
 
 $.update = function (dt) {
@@ -95,7 +97,7 @@ $.update = function (dt) {
             $.goToScoreState();
         }
         $.upgrade.updateButtons($.money, $.bees.length);
-
+        $.buttonUpdateTimer -= dt;
         var curHappyChange = 0;
         var b;
         var checkDead = false;
@@ -107,7 +109,9 @@ $.update = function (dt) {
             curHappyChange += $.bees[b].getHappiness();
         }
         if (checkDead === true) {
-            var f = function (bee) {return !bee.isDead()};
+            var f = function (bee) {
+                return !bee.isDead()
+            };
             $.bees = $.bees.filter(f);
         }
         $.nextSeasonTimer -= dt;
@@ -120,41 +124,43 @@ $.update = function (dt) {
     }
 };
 
-$.render = function(fps) {
+$.render = function (fps) {
     $.drawBackground();
-    
-    if($.gameState === 'menu') {
+
+    if ($.gameState === 'menu') {
         $.ctx.drawImage($.titleImage, 0, 0, 400, 200, 280, 100, 400, 200);
     }
-    
-    if($.gameState === 'game') {
+
+    if ($.gameState === 'game') {
         var bgh = $.season == 3 ? 200 : 0;
         $.ctx.drawImage($.bgImage, 0, bgh, 960, 200, 0, $.canvas.height - 200, 960, 200);
         $.ctx.drawImage($.treeImage, 100 * $.season, 0, 100, 200, 500, 250, 100, 200);
         $.ctx.drawImage($.treeImage, 100 * $.season, 0, 100, 200, 450, 280, 100, 200);
         $.ctx.drawImage($.treeImage, 100 * $.season, 0, 100, 200, 560, 260, 100, 200);
-        for (var b=0; b < $.bees.length; ++b) {
+        for (var b = 0; b < $.bees.length; ++b) {
             $.bees[b].render();
         }
         $.pot.render();
-        $.ctx.drawImage($.beeImage, 0, 0, 32, 32, 360, 4, 16, 16);
-        $.drawText($.bees.length, 380, 20, '#333333', $.normalFont);
-        $.ctx.drawImage($.honeyImage, 0, 0, 40, 40, 410, 4, 16, 16);
-        $.drawText($.honey, 430, 20, '#333333', $.normalFont);
+        $.ctx.drawImage($.beeImage, 0, 0, 32, 32, 360, 4, 20, 20);
+        $.drawText($.bees.length, 385, 20, '#333333', $.normalFont);
+        $.ctx.drawImage($.honeyImage, 0, 0, 40, 40, 410, 4, 20, 20);
+        $.drawText($.honey, 435, 20, '#333333', $.normalFont);
         $.drawText("$ " + $.money, 470, 20, '#333333', $.normalFont);
-        document.getElementById("sellButton").value = "Sell x2 (+$" + $.getHoneyPrice() + ")";
-        document.getElementById("sellButton").disabled = $.honey < 2;
-        document.getElementById("sell2Button").value = "Sell x10 (+$" + ($.getHoneyPrice() * 10) + ")";
-        document.getElementById("sell2Button").disabled = $.honey < 10;
-        document.getElementById("buyBeeButton").value = "Buy Bee (-$" + $.getBeePrice() + ")";
-        document.getElementById("buyBeeButton").disabled = $.money < $.getBeePrice();
+
+        // innerHtml does not work in Chrome... only for these buttons. hiveButton works in upgrade.js WTF??!?!?!
+        document.getElementById("honeyText").innerText = "x5: +$" + ($.getHoneyPrice() * 5);
+        document.getElementById("honeyText").innerHtml = "x5: +$" + ($.getHoneyPrice() * 5);
+        document.getElementById("honeyButton").disabled = $.honey < 5;
+        document.getElementById("beeText").innerText = "$" + $.getBeePrice();
+        document.getElementById("beeText").innerHtml = "$" + $.getBeePrice();
+        document.getElementById("beeButton").disabled = $.money < $.getBeePrice();
     }
-   
-    if($.gameState === 'score') {
+
+    if ($.gameState === 'score') {
         $.drawText("Nice job, you collected $" + $.money, 350, 250, '#333333', $.normalFont);
     }
-    
-    if($.showFps) {
+
+    if ($.showFps) {
         $.drawText("FPS: " + fps.toFixed(1), 10, 20, '#333333');
     }
 };
@@ -164,9 +170,9 @@ $.drawBackground = function () {
     $.ctx.fillRect(0, 0, $.canvas.width, $.canvas.height);
 };
 
-$.drawText = function(text, x, y, col, font) {
+$.drawText = function (text, x, y, col, font) {
     $.ctx.font = $.normalFont;
-    if(font) {
+    if (font) {
         $.ctx.font = font;
     }
     $.ctx.fillStyle = col;
@@ -181,7 +187,7 @@ $.onPressPlay = function () {
 $.onPressSellHoney = function (amount) {
     $.honey -= amount;
     $.money += $.getHoneyPrice() * amount;
-    for (var b=0; b < $.bees.length; ++b) {
+    for (var b = 0; b < $.bees.length; ++b) {
         $.bees[b].happiness = $.utils.clamp($.bees[b].happiness - (amount / 2), 0, 10);
     }
 };
@@ -234,9 +240,8 @@ $.goToGameState = function () {
 };
 
 $.setInterfaceVisible = function (display) {
-    document.getElementById("sellButton").style.display = display;
-    document.getElementById("sell2Button").style.display = display;
-    document.getElementById("buyBeeButton").style.display = display;
+    document.getElementById("honeyButton").style.display = display;
+    document.getElementById("beeButton").style.display = display;
     document.getElementById("events").style.display = display;
     $.upgrade.setVisibility(display);
 };
@@ -246,7 +251,7 @@ $.nextSeason = function () {
     $.nextSeasonTimer = $.nextSeasonTime;
     $.season = ($.season + 1) % 4;
 
-    for (var b=0; b < $.bees.length; ++b) {
+    for (var b = 0; b < $.bees.length; ++b) {
         if ($.season == 3) {
             if ($.upgrade.hats === true) {
                 $.bees[b].happiness = $.utils.clamp($.bees[b].happiness - 2, 0, 10);
@@ -291,7 +296,7 @@ $.createEvent = function () {
         t = $.seasons[$.season] + ": " + b.name + " was born.";
     } else if (r == 3) {
         // happy times
-        for (var b=0; b < $.bees.length; ++b) {
+        for (var b = 0; b < $.bees.length; ++b) {
             $.bees[b].happiness = $.utils.clamp($.bees[b].happiness + 1, 0, 10);
         }
         t = $.seasons[$.season] + ": The bees are happy.";

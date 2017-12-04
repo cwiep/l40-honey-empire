@@ -46,20 +46,26 @@
     <div id="gui" class="interface">
         <input id="playButton" type="button" onclick="$.onPressPlay()" value="Play"
                style="position: absolute; left: 450px; top: 260px;">
-        <div id="gamebuttons" style="position: absolute; bottom: 5px; left: 5px; width: 500px;">
-            <input id="sellButton" type="button" onclick="$.onPressSellHoney(2)" value="Sell Honey" style="float: left">
-            <input id="sell2Button" type="button" onclick="$.onPressSellHoney(10)" value="Sell Honey" style="float: left">
-            <input id="buyBeeButton" type="button" onclick="$.onPressBuyBee()" value="Buy Bee" style="float: left">
-        </div>
-        <div id="upgrades" style="position: absolute; right: 5px; top: 16px; width: 64px; ">
-            <button id="hatsButton" class="btn" onclick="$.upgrade.onPressHats()"
+        <div id="upgrades" style="position: absolute; right: 5px; top: 32px; width: 64px; ">
+            <button id="hatsButton" class="btn" onclick="$.upgrade.onPressHats()" style="float: right;"
                     title="Winterhats for your bees. Reduces happiness penalty during winter.">
                 <img  src="res/button_hats.png" width="40" height="40"/>
                 <span id="hatsText">$20</span>
             </button>
-            <button id="hiveButton" class="btn" onclick="$.upgrade.onPressHive()" title="Bees get happiness when visiting.">
+            <button id="hiveButton" class="btn" onclick="$.upgrade.onPressHive()" style="float: right;"
+                    title="Bees get happiness when visiting.">
                 <img  src="res/button_hive.png" width="40" height="40"/>
                 <span id="hiveText">$30</span>
+            </button>
+        </div>
+        <div id="gamebuttons" style="position: absolute; right: 69px; top: 32px; width: 64px;">
+            <button id="honeyButton" class="btn" onclick="$.onPressSellHoney(5)" style="float: right;">
+                <img  src="res/honey.png" width="40" height="40"/>
+                <span id="honeyText">fuck</span>
+            </button>
+            <button id="beeButton" class="btn" onclick="$.onPressBuyBee()" style="float: right;">
+                <img  src="res/button_bee.png" width="40" height="40"/>
+                <span id="beeText">fuck</span>
             </button>
         </div>
         <div id="events" style="position: absolute; right: 5px; bottom: 5px; display: block; width: 400px;
