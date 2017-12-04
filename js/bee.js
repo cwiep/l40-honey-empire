@@ -126,7 +126,7 @@ $.Bee.prototype.render = function () {
     }
     $.drawText(this.name, this.x, this.y + 42, "#000000", $.smallFont);
     //$.drawText(this.state, this.x, this.y + 42, "#ffffff", $.smallFont);
-    $.drawText(this.happiness, this.x, this.y + 54, "#000000", $.smallFont);
+    $.drawText("H:" + this.happiness, this.x+10, this.y + 54, "#000000", $.smallFont);
     // $.drawText(this.age, this.x + 16, this.y + 54, "#ffffff", $.smallFont);
     //$.drawText(this.stateTimer, this.x, this.y + 48, "#ffffff", $.smallFont);
 };

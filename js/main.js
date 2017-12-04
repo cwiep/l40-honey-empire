@@ -131,6 +131,8 @@ $.render = function (fps) {
 
     if ($.gameState === 'menu') {
         $.ctx.drawImage($.titleImage, 0, 0, 400, 200, 280, 100, 400, 200);
+        $.drawText("Ludum Dare 40 Jam", 790, 520, '#333333', $.normalFont);
+        $.drawText("by Christian Wieprecht", 10, 520, '#333333', $.normalFont);
     }
 
     if ($.gameState === 'game') {
@@ -284,7 +286,7 @@ $.nextSeason = function () {
 };
 
 $.createEvent = function () {
-    var r = Math.floor(Math.random() * 8);
+    var r = Math.floor(Math.random() * 11);
     var t = "";
     if (r == 0) {
         if ($.bees.length <= 1) {
@@ -301,7 +303,7 @@ $.createEvent = function () {
         }
         t = $.seasons[$.season] + ": Some of your honey went bad.";
         $.honey = Math.max(0, $.honey - 2);
-    } else if (r == 2) {
+    } else if (r == 2 || r == 3) {
         // new bee born
         if ($.bees.length < 2) {
             return;
@@ -309,18 +311,18 @@ $.createEvent = function () {
         var b = new $.Bee(400, 300);
         $.bees.push(b);
         t = $.seasons[$.season] + ": " + b.name + " was born.";
-    } else if (r == 3) {
+    } else if (r == 4) {
         // happy times
         for (var b = 0; b < $.bees.length; ++b) {
             $.bees[b].happiness = $.utils.clamp($.bees[b].happiness + 1, 0, 10);
         }
         t = $.seasons[$.season] + ": The bees are happy.";
-    } else if (r == 4) {
+    } else if (r == 5) {
         // bad day
         var b = Math.floor(Math.random() * $.bees.length);
         $.bees[b].happiness = $.utils.clamp($.bees[b].happiness - 3, 0, 10);
         t = $.seasons[$.season] + ": " + $.bees[b].name + " has a bad day.";
-    } else if (r == 5) {
+    } else if (r == 6) {
         // bad taxes
         var taxes = Math.floor(0.1 * $.money);
         $.money -= taxes;
