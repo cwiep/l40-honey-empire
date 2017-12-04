@@ -79,6 +79,8 @@ $.reset = function () {
     $.buttonUpdateTimer = 1000;
 
     $.events = [];
+
+    $.upgrade.init();
 };
 
 $.loop = function () {
@@ -188,7 +190,7 @@ $.onPressSellHoney = function (amount) {
     $.honey -= amount;
     $.money += $.getHoneyPrice() * amount;
     for (var b = 0; b < $.bees.length; ++b) {
-        $.bees[b].happiness = $.utils.clamp($.bees[b].happiness - (amount / 2), 0, 10);
+        $.bees[b].happiness = $.utils.clamp($.bees[b].happiness - 1, 0, 10);
     }
 };
 

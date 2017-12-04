@@ -3,6 +3,8 @@ $.upgrade = {};
 $.upgrade.init = function () {
     $.upgrade.hats = false;
     $.upgrade.hive = false;
+    document.getElementById("hatsText").innerHTML = "$20";
+    document.getElementById("hiveText").innerHTML = "$30";
 };
 
 $.upgrade.onPressHats = function () {
