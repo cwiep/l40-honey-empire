@@ -95,7 +95,7 @@ $.loop = function () {
 
 $.update = function (dt) {
     if ($.gameState === "game") {
-        if ($.bees.length == 0) {
+        if ($.bees.length == 0 || $.honey >= 10000) {
             $.goToScoreState();
         }
         $.upgrade.updateButtons($.money, $.bees.length);
@@ -164,7 +164,12 @@ $.render = function (fps) {
     }
 
     if ($.gameState === 'score') {
-        $.drawText("Nice job, you collected $" + $.money, 350, 250, '#333333', $.normalFont);
+        if ($.bees.length <= 0) {
+            $.drawText("Game Over. All your bees died.", 350, 250, '#333333', $.normalFont);
+        } else {
+            $.drawText("Nice job! You collected a shit-ton of honey! Also $" + $.money + " and " + $.bees.length
+                + " bees.", 250, 250, '#333333', $.normalFont);
+        }
     }
 
     if ($.showFps) {
