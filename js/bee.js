@@ -58,6 +58,7 @@ $.Bee.prototype.toPot = function () {
     if (dist < 5) {
         this.stateTimer = 3000;
         this.state = "inPot";
+        this.happiness = $.utils.clamp(this.happiness + 1, 0, 10);
         return;
     }
     if (Math.abs($.pot.x + 40 - this.x) < 5) {
@@ -118,7 +119,7 @@ $.Bee.prototype.render = function () {
     }
     $.drawText(this.name, this.x, this.y + 42, "#000000", $.smallFont);
     //$.drawText(this.state, this.x, this.y + 42, "#ffffff", $.smallFont);
-    // $.drawText(this.happiness, this.x, this.y + 54, "#ffffff", $.smallFont);
+    $.drawText(this.happiness, this.x, this.y + 54, "#000000", $.smallFont);
     // $.drawText(this.age, this.x + 16, this.y + 54, "#ffffff", $.smallFont);
     //$.drawText(this.stateTimer, this.x, this.y + 48, "#ffffff", $.smallFont);
 };
