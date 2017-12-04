@@ -32,6 +32,9 @@ $.init = function() {
     $.titleImage = new Image();
     $.titleImage.src = "res/title.png";
 
+    $.honeyImage = new Image();
+    $.honeyImage.src = "res/honey.png";
+
     $.smallFont = "10px sans-serif";
     $.normalFont = "16px sans-serif";
     $.plusFont = "bold 20px sans-serif";
@@ -134,9 +137,10 @@ $.render = function(fps) {
             $.bees[b].render();
         }
         $.pot.render();
-        $.ctx.drawImage($.beeImage, 0, 0, 32, 32, 300, 4, 16, 16);
-        $.drawText($.bees.length, 320, 20, '#333333', $.normalFont);
-        $.drawText("Honey " + $.honey, 370, 20, '#333333', $.normalFont);
+        $.ctx.drawImage($.beeImage, 0, 0, 32, 32, 360, 4, 16, 16);
+        $.drawText($.bees.length, 380, 20, '#333333', $.normalFont);
+        $.ctx.drawImage($.honeyImage, 0, 0, 40, 40, 410, 4, 16, 16);
+        $.drawText($.honey, 430, 20, '#333333', $.normalFont);
         $.drawText("$ " + $.money, 470, 20, '#333333', $.normalFont);
         document.getElementById("sellButton").value = "Sell x2 (+$" + $.getHoneyPrice() + ")";
         document.getElementById("sellButton").disabled = $.honey < 2;
