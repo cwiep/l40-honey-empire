@@ -91,6 +91,8 @@ $.update = function (dt) {
         if ($.bees.length == 0) {
             $.goToScoreState();
         }
+        $.upgrade.updateButtons($.money, $.bees.length);
+
         var curHappyChange = 0;
         var b;
         var checkDead = false;
@@ -198,15 +200,15 @@ $.getHoneyPrice = function () {
 };
 
 $.getBeePrice = function () {
-    if ($.season == 0 || $.season == 2) {
-        // spring, fall
-        return 60;
+    if ($.season == 2) {
+        // fall
+        return 40;
     } else if ($.season == 3) {
         // winter
-        return 100;
+        return 70;
     }
     // summer
-    return 40;
+    return 30;
 };
 
 $.goToScoreState = function () {
@@ -232,6 +234,7 @@ $.setInterfaceVisible = function (display) {
     document.getElementById("sell2Button").style.display = display;
     document.getElementById("buyBeeButton").style.display = display;
     document.getElementById("events").style.display = display;
+    $.upgrade.setVisibility(display);
 };
 
 $.nextSeason = function () {
@@ -241,8 +244,11 @@ $.nextSeason = function () {
 
     for (var b=0; b < $.bees.length; ++b) {
         if ($.season == 3) {
-            // winter // TODO: only without bed
-            $.bees[b].happiness = $.utils.clamp($.bees[b].happiness - 3, 0, 10);
+            if ($.upgrade.hats === true) {
+                $.bees[b].happiness = $.utils.clamp($.bees[b].happiness - 2, 0, 10);
+            } else {
+                $.bees[b].happiness = $.utils.clamp($.bees[b].happiness - 3, 0, 10);
+            }
         } else if ($.season == 1) {
             // summer
             $.bees[b].happiness = $.utils.clamp($.bees[b].happiness + 3, 0, 10);

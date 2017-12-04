@@ -110,7 +110,11 @@ $.Bee.prototype.render = function () {
     if (this.state === "striking") {
         $.ctx.drawImage($.beeImage, 32, 0, 32, 32, this.x, this.y, 32, 32);
     } else {
-        $.ctx.drawImage($.beeImage, 0, 0, 32, 32, this.x, this.y, 32, 32);
+        if ($.upgrade.hats === true && $.season == 3) {
+            $.ctx.drawImage($.beeImage, 64, 0, 32, 32, this.x, this.y, 32, 32);
+        } else {
+            $.ctx.drawImage($.beeImage, 0, 0, 32, 32, this.x, this.y, 32, 32);
+        }
     }
     $.drawText(this.name, this.x, this.y + 42, "#000000", $.smallFont);
     //$.drawText(this.state, this.x, this.y + 42, "#ffffff", $.smallFont);
@@ -130,6 +134,9 @@ $.Bee.prototype.getHoneyProduction = function () {
     }
     if (this.age > $.maxAge / 2) {
         ++h;
+    }
+    if (this.happiness == 10) {
+        h += 2;
     }
     return h;
 };

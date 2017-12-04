@@ -28,6 +28,14 @@
         a:hover {
             text-decoration: underline;
         }
+
+        .btn img {
+            display: inline-block;
+            vertical-align: middle;
+            padding: 2px;
+            border-radius: 2px;
+        }
+
     </style>
 </head>
 <body>
@@ -43,6 +51,17 @@
             <input id="sell2Button" type="button" onclick="$.onPressSellHoney(10)" value="Sell Honey" style="float: left">
             <input id="buyBeeButton" type="button" onclick="$.onPressBuyBee()" value="Buy Bee" style="float: left">
         </div>
+        <div id="upgrades" style="position: absolute; right: 5px; top: 16px; width: 64px; ">
+            <button id="hatsButton" class="btn" onclick="$.upgrade.onPressHats()"
+                    title="Winterhats for your bees. Reduces happiness penalty during winter.">
+                <img  src="res/button_hats.png" width="40" height="40"/>
+                <span id="hatsText">$20</span>
+            </button>
+            <!--<button id="hiveButton" class="btn" onclick="$.upgrade.onPressHive()" title="Upgrade the hive">
+                <img  src="res/pot.png" width="40" height="40"/>
+                <span id="hiveText">$5</span>
+            </button>-->
+        </div>
         <div id="events" style="position: absolute; right: 5px; bottom: 5px; display: block; width: 400px;
         height: 100px; background-color: #DCD4D4; padding: 5px;">
         </div>
@@ -53,6 +72,7 @@
 <script src="js/utils.js"></script>
 <script src="js/bee.js"></script>
 <script src="js/pot.js"></script>
+<script src="js/upgrade.js"></script>
 <script src="js/main.js"></script>
 
 </body>
